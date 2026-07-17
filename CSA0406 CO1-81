@@ -1,0 +1,68 @@
+praveen raj .A
+192511456
+
+  Q1:
+      A)  Multi-user, Time-sharing Operating System
+      B) (1) The kernel allocates CPU time slices to different user processes to ensure fair and efficient execution
+         (2) Process Synchronization & Isolation: Provides mechanisms for processes to coordinate while ensuring one student's process 
+                                                   cannot illegally access or corrupt another student's memory space.
+        (3) BEGIN
+             OPEN file "student.txt" 
+             IF file cannot be opened THEN
+             PRINT "File creation failed"
+             STOP
+             END IF
+              SET StudentName = "John Doe"
+              WRITE StudentName to the file
+              CLOSE the file
+              PRINT "File created and data written successfully"
+             END
+
+Q2:
+   A) open() – Create/Open a file
+      write() – Write data to the file
+      read() – Read data from the file
+      close() – Close the file
+  B)  open() – Opens or creates a file and returns a file descriptor.
+      write() – Writes data from memory into the file.
+
+  C)  BEGIN
+      Create file "student.txt"
+      Write "John Doe" into the file
+      Close the file
+      END
+
+Q3): 
+    A) open()
+       read()
+       write()
+       close()
+    B) open() – Opens the source file for reading and the destination file for writing/creating.
+       read() – Reads data from the source file into a buffer
+    C) Open source file
+       Open destination file
+       Read from source file
+       Write to destination file
+      Close both files
+Q4):
+      A)   fork() – Creates a new child process.
+           exec() – Replaces the child process with a new program.
+      B)   wait() – Makes the parent process wait until the child process finishes.
+  
+      C)   fork()
+         If child process
+              exec(new_program)
+         Else
+                wait()
+         End If
+Q5)    
+      A) Organizes and stores files efficiently.
+         Provides secure and easy access to files.
+         Manages file storage and retrieval.
+      B) open() – Opens a file for reading or writing.
+         close() – Closes the file and releases system resources.
+     C)  fd = open("file.txt", O_RDONLY);
+         read(fd, buffer, 100);
+        close(fd);
+
+
