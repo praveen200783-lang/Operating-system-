@@ -7,7 +7,7 @@ praveen raj .A
          (2) Process Synchronization & Isolation: Provides mechanisms for processes to coordinate while ensuring one student's process 
                                                    cannot illegally access or corrupt another student's memory space.
         (3) BEGIN
-             OPEN file "student.txt" 
+             OPEN file "student.text" 
              IF file cannot be opened THEN
              PRINT "File creation failed"
              STOP
@@ -61,7 +61,7 @@ Q5)
          Manages file storage and retrieval.
       B) open() – Opens a file for reading or writing.
          close() – Closes the file and releases system resources.
-     C)  fd = open("file.txt", O_RDONLY);
+     C)  fd = open("file.txt");
          read(fd, buffer, 100);
         close(fd);
 
