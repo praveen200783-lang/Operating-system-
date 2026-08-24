@@ -1,0 +1,236 @@
+NAME: PRAVEEN RAJ A
+REG NO: 192511456
+
+Q1)
+     Aim:
+
+To design an optimized Linux file system layout for a **50 GB server** that manages logs, user files, and application data efficiently while preventing disk space exhaustion.
+
+ File System Layout:
+
+ Partition        Size  Purpose                       
+ `/`             12 GB  OS and system files           
+ `/var`          10 GB  System logs and variable data 
+ `/home`         10 GB  User files                    
+ `/opt`          10 GB  Application data              
+ `/tmp`           4 GB  Temporary files               
+ Free space       4 GB  Emergency/reserved space      
+ Total  50 GB                               
+
+ Storage Management:
+
+The `/var` partition is restricted to 10 GB, ensuring that log files cannot consume the entire disk.
+
+Use logrotate to automatically manage logs:
+
+bash
+sudo nano /etc/logrotate.d/system-logs
+
+
+Example configuration:
+
+```text
+/var/log/*.log {
+    daily
+    rotate 7
+    compress
+    missingok
+    notifempty
+}
+```
+
+This will:
+
+* Rotate logs daily.
+* Keep only 7 old log files.
+* Compress old logs.
+* Remove older logs automatically.
+
+Disk usage can be monitored using:
+
+```bash
+df -h
+du -sh /var/log
+```
+
+If disk usage becomes high, old logs can be compressed or removed according to the retention policy.
+
+Q2)
+    Kernel-Level Optimizations:
+
+Scheduler Tuning
+
+The Linux scheduler can be tuned to give important processes higher priority.
+
+Use real-time scheduling policies such as SCHED_FIFO and SCHED_RR.
+
+Assign higher priority to critical real-time processes.
+
+Reduce unnecessary process switching.
+
+Use CPU affinity to keep important processes on specific CPU cores.
+
+Example:
+
+taskset -c 2 ./realtime_app
+
+Kernel Preemption
+
+Configure the kernel for low-latency or real-time preemption. This allows high-priority processes to run quickly and reduces response delays.
+
+Kernel Modules
+
+Use lightweight kernel modules for operations that require fast kernel-level processing. This can reduce unnecessary user-space processing and improve performance.
+
+Reduce Context Switching
+
+Avoid unnecessary threads.
+
+Use CPU affinity.
+
+Reduce unnecessary synchronization.
+
+Give critical processes suitable real-time priorities.
+
+Performance Monitoring
+
+Use the following tools to monitor CPU usage and context switching:
+
+top
+
+htop
+
+vmstat
+
+pidstat
+
+Conclusion
+
+Scheduler tuning, real-time kernel preemption, CPU affinity, and carefully designed kernel modules can reduce context-switching overhead and improve response time
+These techniques improve system performance without requiring hardware upgrades and support real-time processing.
+
+Q3)  
+     Problem:
+
+The administrator needs to process 1 million log entries per day using only shell scripting. The main challenge is to process all entries within 2 minutes while minimizing CPU, memory, and disk usage.
+
+Solution:
+
+Use optimized Linux commands and avoid unnecessary loops.
+
+Example:
+   /bin/bash
+
+LOGFILE="system.log"
+
+grep "ERROR" "$LOGFILE" |
+awk '{count[$5]++} END {
+    for (key in count)
+        print key, count[key]
+}' > error_report.txt
+Use:
+grep "ERROR" system.log | sort | uniq -c > error_report.txt
+Recommended Commands:
+grep
+Used to quickly filter required log entries.
+awk
+Used for fast text processing, field extraction, and counting.
+sort
+Used to organize matching records efficiently.
+uniq
+Used to count duplicate entries after sorting.
+
+wc
+Used to quickly count lines and entries.
+Example:
+wc -l system.log
+grep -c "ERROR" system.log
+Performance Optimization:
+Avoid processing logs line-by-line using shell loops.
+Use grep, awk, sort, and uniq because they are optimized compiled Linux utilities.
+Process the log file in a single pipeline where possible.
+Avoid unnecessary temporary files.
+Use parallel processing only when required and when the system has multiple CPU cores.
+
+Example:
+time grep "ERROR" system.log | sort | uniq -c > error_report.txt
+Justification:
+grep provides fast pattern matching, awk performs efficient field processing, sort organizes data efficiently, and uniq removes duplicate records and produces
+counts. Using pipelines reduces unnecessary disk I/O and avoids slow shell loops.
+Therefore, an optimized pipeline using standard Linux commands can process 1 million log entries efficiently and is suitable for meeting the 2-minute requirement,
+subject to the log size, hardware performance, and complexity of the processing.
+
+Q4)
+   Problem:
+A faulty background process is consuming 90% of CPU resources. The system should not be restarted, and critical services must continue running normally.
+Process Management Strategy
+Identify the Faulty Process
+Use top or ps to find the process consuming high CPU.
+top
+or
+ps aux --sort=-%cpu | head
+Note the PID of the faulty process.
+Monitor the Process
+Use:
+top -p PID
+or
+pidstat -p PID 1
+This helps monitor CPU usage continuously.
+Reduce Process Priority
+If the process is not critical, reduce its priority using:
+renice +10 -p PID
+This allows critical services to get more CPU time.
+Limit CPU Usage
+Use cpulimit if available:
+cpulimit -p PID -l 20
+This limits the process to approximately 20% CPU usage.
+Stop the Faulty Process
+If the process continues causing problems, terminate it safely:
+
+kill PID
+If it does not stop:
+kill -9 PID
+Use kill -9 only as a last option.
+Verify Critical Services
+Check running services using:
+systemctl --type=service --state=running
+Monitor CPU usage again with:
+top
+Justification:
+top and ps identify the high-CPU process. pidstat provides continuous monitoring. renice reduces its CPU priority without affecting other services.
+cpulimit controls excessive CPU consumption. kill safely terminates the faulty process if required.
+Thus, the faulty process can be identified, monitored, and controlled without restarting the system, while critical services continue operating normally.
+
+
+Q5)
+  Given:
+Total physical RAM = 16 GB
+Host OS requirement = 4 GB
+Number of VMs = 5
+Minimum RAM per VM = 2 GB
+1. Calculate available RAM
+RAM available for VMs:
+16 GB − 4 GB = 12 GB
+2. Allocate RAM to VMs
+Minimum required for 5 VMs:
+5 × 2 GB = 10 GB
+So after giving every VM its minimum:
+12 − 10 = 2 GB remaining
+An efficient allocation is:
+Resource	RAM
+Host OS	4 GB
+VM1	2 GB
+VM2	2 GB
+VM3	2 GB
+VM4	3 GB
+VM5	3 GB
+Total	16 GB
+3. Strategy:
+Keep 4 GB permanently reserved for the host OS so the physical server remains stable.
+Allocate 2 GB minimum to every VM.
+Give the remaining 2 GB to VMs that run more demanding applications.
+Use dynamic memory allocation/ballooning if supported by the hypervisor. This allows RAM to be moved between VMs according to workload.
+Monitor RAM usage and avoid overcommitting memory heavily, because all 5 VMs must operate smoothly.
+Conclusion:
+The best basic allocation is 4 GB for the host + 2 GB each for three VMs + 3 GB each for two high-demand VMs = 16 GB. Dynamic memory can then adjust
+the VM allocations when workloads change.
