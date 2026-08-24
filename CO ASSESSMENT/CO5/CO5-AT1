@@ -4,10 +4,9 @@ REG NO: 192511456
 Q1)
      Aim:
 
-To design an optimized Linux file system layout for a **50 GB server** that manages logs, user files, and application data efficiently while preventing disk space exhaustion.
-
+To design an optimized Linux file system layout for a **50 GB server** that manages logs, user files, and application data efficiently while preventing disk 
+space exhaustion.
  File System Layout:
-
  Partition        Size  Purpose                       
  `/`             12 GB  OS and system files           
  `/var`          10 GB  System logs and variable data 
@@ -16,19 +15,12 @@ To design an optimized Linux file system layout for a **50 GB server** that mana
  `/tmp`           4 GB  Temporary files               
  Free space       4 GB  Emergency/reserved space      
  Total  50 GB                               
-
  Storage Management:
-
 The `/var` partition is restricted to 10 GB, ensuring that log files cannot consume the entire disk.
-
 Use logrotate to automatically manage logs:
-
 bash
 sudo nano /etc/logrotate.d/system-logs
-
-
 Example configuration:
-
 ```text
 /var/log/*.log {
     daily
@@ -38,91 +30,58 @@ Example configuration:
     notifempty
 }
 ```
-
 This will:
-
 * Rotate logs daily.
 * Keep only 7 old log files.
 * Compress old logs.
 * Remove older logs automatically.
-
 Disk usage can be monitored using:
-
 ```bash
 df -h
 du -sh /var/log
 ```
-
 If disk usage becomes high, old logs can be compressed or removed according to the retention policy.
 
 Q2)
     Kernel-Level Optimizations:
-
 Scheduler Tuning
-
 The Linux scheduler can be tuned to give important processes higher priority.
-
 Use real-time scheduling policies such as SCHED_FIFO and SCHED_RR.
-
 Assign higher priority to critical real-time processes.
-
 Reduce unnecessary process switching.
-
 Use CPU affinity to keep important processes on specific CPU cores.
-
 Example:
-
 taskset -c 2 ./realtime_app
-
 Kernel Preemption
-
 Configure the kernel for low-latency or real-time preemption. This allows high-priority processes to run quickly and reduces response delays.
-
 Kernel Modules
-
 Use lightweight kernel modules for operations that require fast kernel-level processing. This can reduce unnecessary user-space processing and improve performance.
-
 Reduce Context Switching
-
 Avoid unnecessary threads.
-
 Use CPU affinity.
-
 Reduce unnecessary synchronization.
-
 Give critical processes suitable real-time priorities.
-
 Performance Monitoring
-
 Use the following tools to monitor CPU usage and context switching:
-
 top
-
 htop
-
 vmstat
-
 pidstat
-
-Conclusion
-
-Scheduler tuning, real-time kernel preemption, CPU affinity, and carefully designed kernel modules can reduce context-switching overhead and improve response time
+Conclusion:
+Scheduler tuning, real-time kernel preemption, CPU affinity, and carefully designed kernel modules can reduce context-switching overhead and improve
+response time
 These techniques improve system performance without requiring hardware upgrades and support real-time processing.
 
 Q3)  
      Problem:
-
-The administrator needs to process 1 million log entries per day using only shell scripting. The main challenge is to process all entries within 2 minutes while minimizing CPU, memory, and disk usage.
-
+The administrator needs to process 1 million log entries per day using only shell scripting. The main challenge is to process all entries within 2 minutes
+while minimizing CPU,
+memory, and disk usage.
 Solution:
-
 Use optimized Linux commands and avoid unnecessary loops.
-
 Example:
    /bin/bash
-
 LOGFILE="system.log"
-
 grep "ERROR" "$LOGFILE" |
 awk '{count[$5]++} END {
     for (key in count)
@@ -139,7 +98,6 @@ sort
 Used to organize matching records efficiently.
 uniq
 Used to count duplicate entries after sorting.
-
 wc
 Used to quickly count lines and entries.
 Example:
