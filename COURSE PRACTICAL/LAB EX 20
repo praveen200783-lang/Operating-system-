@@ -1,0 +1,57 @@
+#include <stdio.h>
+
+int buffer[5];
+int in = 0, out = 0;
+int empty = 5, full = 0, mutex = 1;
+
+void wait(int *s)
+{
+    while (*s <= 0);
+    (*s)--;
+}
+
+void signal(int *s)
+{
+    (*s)++;
+}
+
+void producer(int item)
+{
+    wait(&empty);
+    wait(&mutex);
+
+    buffer[in] = item;
+    printf("Produced: %d\n", item);
+    in = (in + 1) % 5;
+
+    signal(&mutex);
+    signal(&full);
+}
+
+void consumer()
+{
+    int item;
+
+    wait(&full);
+    wait(&mutex);
+
+    item = buffer[out];
+    printf("Consumed: %d\n", item);
+    out = (out + 1) % 5;
+
+    signal(&mutex);
+    signal(&empty);
+}
+
+int main()
+{
+    int i;
+
+    for (i = 1; i <= 5; i++)
+        producer(i);
+
+    for (i = 1; i <= 5; i++)
+        consumer();
+
+    return 0;
+}

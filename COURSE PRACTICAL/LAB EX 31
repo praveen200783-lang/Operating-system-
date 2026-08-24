@@ -1,0 +1,27 @@
+#include <stdio.h>
+
+int main()
+{
+    int index[20], n, i, block;
+
+    printf("Enter number of blocks: ");
+    scanf("%d", &n);
+
+    printf("Enter block numbers:\n");
+    for(i = 0; i < n; i++)
+        scanf("%d", &index[i]);
+
+    printf("\nIndex Block:\n");
+    for(i = 0; i < n; i++)
+        printf("Index %d -> Block %d\n", i, index[i]);
+
+    printf("\nEnter block index to access: ");
+    scanf("%d", &block);
+
+    if(block >= 0 && block < n)
+        printf("Block accessed: %d\n", index[block]);
+    else
+        printf("Invalid index\n");
+
+    return 0;
+}
