@@ -1,0 +1,47 @@
+#include <stdio.h>
+#include <pthread.h>
+#include <unistd.h>
+
+pthread_mutex_t fork[5];
+
+void *philosopher(void *arg)
+{
+    int n = *(int *)arg;
+    int left = n;
+    int right = (n + 1) % 5;
+
+    printf("Philosopher %d is thinking\n", n + 1);
+
+    pthread_mutex_lock(&fork[left]);
+    pthread_mutex_lock(&fork[right]);
+
+    printf("Philosopher %d is eating\n", n + 1);
+    sleep(1);
+
+    pthread_mutex_unlock(&fork[left]);
+    pthread_mutex_unlock(&fork[right]);
+
+    printf("Philosopher %d finished eating\n", n + 1);
+
+    return NULL;
+}
+
+int main()
+{
+    pthread_t p[5];
+    int i, n[5];
+
+    for(i = 0; i < 5; i++)
+        pthread_mutex_init(&fork[i], NULL);
+
+    for(i = 0; i < 5; i++)
+    {
+        n[i] = i;
+        pthread_create(&p[i], NULL, philosopher, &n[i]);
+    }
+
+    for(i = 0; i < 5; i++)
+        pthread_join(p[i], NULL);
+
+    return 0;
+}
