@@ -1,0 +1,144 @@
+NAME: PRAVEEN RAJ A
+REG NO: 192511456
+
+
+Q1)
+  BEGIN
+    SET threshold = 80%
+    usage = GET_DISK_USAGE()
+    IF usage > threshold THEN
+        FIND log_files
+        SORT log_files by size
+        FOR each file DO
+            ROTATE or COMPRESS file
+            usage = GET_DISK_USAGE()
+            IF usage <= threshold THEN
+                BREAK
+            ENDIF
+        ENDFOR
+        IF usage > threshold THEN
+            DELETE oldest log files
+        ENDIF
+    ENDIF
+END
+Set disk usage limit to 80%.
+Check the current disk usage.
+If usage exceeds 80%, find and sort log files.
+Rotate or compress the log files to save space.
+Check usage again.
+If still above 80%, delete the oldest unnecessary logs.
+Stop when disk usage becomes 80% or less.
+
+Q2)
+    BEGIN
+    INPUT process_list with priority and burst time
+    SORT process_list BY priority (highest first)
+    WHILE process_list is NOT EMPTY DO
+        SELECT process with highest priority
+        ALLOCATE CPU to selected process
+        EXECUTE process
+        IF process is completed THEN
+            REMOVE process from process_list
+        ELSE
+            UPDATE its priority
+            ADD process back to process_list
+        ENDIF
+        SORT process_list BY updated priority
+    ENDWHILE
+    DISPLAY all completed processes
+END
+Input: Get processes with their priority and burst time.
+Sort: Arrange processes based on priority, with the highest priority first.
+Select: Choose the process having the highest priority.
+Execute: Allocate CPU and execute the selected process.
+Completion: Remove the process if it is completed.
+Update: If it is not completed, update its priority and add it back.
+Repeat: Continue until all processes are completed.
+
+
+Q3)
+    BEGIN
+    SET total_RAM = 16GB
+    SET host_reserved = 4GB
+    SET available_RAM = total_RAM - host_reserved
+    SET min_RAM = 2GB
+    INPUT number_of_VMs
+    FOR i = 1 TO number_of_VMs DO
+        IF available_RAM >= min_RAM THEN
+            ALLOCATE min_RAM to VM[i]
+            available_RAM = available_RAM - min_RAM
+        ELSE
+            PRINT "Insufficient memory for VM[i]"
+        ENDIF
+    ENDFOR
+    DISPLAY remaining available_RAM
+END
+Reserve 4 GB RAM for the host OS.
+Calculate available RAM: 16 − 4 = 12 GB.
+Each VM requires at least 2 GB.
+Allocate 2 GB to each VM if enough memory is available.
+Reduce available RAM after every allocation.
+If memory is insufficient, display a warning.
+Finally, display the remaining RAM.
+
+Q4)
+    BEGIN
+    INPUT performance_required
+    INPUT budget
+    INPUT hardware_access
+    IF performance_required = HIGH AND hardware_access = TRUE THEN
+        SELECT Type_1_Hypervisor
+        SET reason = "High performance and direct hardware access" 
+    ELSE IF budget = LOW THEN
+        SELECT Type_2_Hypervisor
+        SET reason = "Low cost and easy setup" 
+    ELSE
+        SELECT Type_1_Hypervisor
+        SET reason = "Better performance and resource utilization"
+    ENDIF
+    PRINT selected_hypervisor
+    PRINT reason
+END
+Input requirements: Get performance needs, available budget, and hardware access.
+High performance: If high performance and direct hardware access are required, select Type-1 hypervisor.
+Low budget: If the budget is low, select Type-2 hypervisor because it is simpler and suitable for general use.
+Default choice: If neither condition applies, select Type-1 for better resource utilization.
+Display result: Finally, display the selected hypervisor and the reason for the selection.
+
+
+Q5)
+     BEGIN
+    INPUT application_list
+
+    FOR each app IN application_list DO
+        CREATE resource group for app
+        SET CPU usage limit
+        SET memory usage limit
+        ASSIGN app process to resource group
+        MONITOR CPU and memory usage
+        IF usage exceeds limit THEN
+            REDUCE resource allocation
+        ENDIF
+    ENDFOR
+    DISPLAY resource usage
+END
+Input: Get the list of applications running in the system.
+Create resource group: Create a cgroup for each application to control its resources.
+Set limits: Define maximum CPU and memory limits for each application.
+Assign process: Place the application process inside its resource group.
+Monitor usage: Continuously check CPU and memory consumption.
+Control excess usage: If an application exceeds its limit, reduce its resource allocation.
+Display usage: Finally, show the resource usage of the applications.
+
+
+
+
+
+
+
+
+
+
+
+
+
