@@ -1,0 +1,73 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int main()
+{
+    int req[20], n, head, disk;
+    int i, j, temp, total = 0;
+
+    printf("Enter disk size: ");
+    scanf("%d", &disk);
+
+    printf("Enter number of requests: ");
+    scanf("%d", &n);
+
+    printf("Enter requests:\n");
+    for(i = 0; i < n; i++)
+        scanf("%d", &req[i]);
+
+    printf("Enter initial head position: ");
+    scanf("%d", &head);
+
+    /* Sort requests */
+    for(i = 0; i < n; i++)
+    {
+        for(j = i + 1; j < n; j++)
+        {
+            if(req[i] > req[j])
+            {
+                temp = req[i];
+                req[i] = req[j];
+                req[j] = temp;
+            }
+        }
+    }
+
+    printf("\nSeek Sequence: %d", head);
+
+    /* Move towards higher tracks */
+    for(i = 0; i < n; i++)
+    {
+        if(req[i] >= head)
+        {
+            total += abs(head - req[i]);
+            head = req[i];
+            printf(" -> %d", head);
+        }
+    }
+
+    /* Move to end of disk */
+    total += abs(head - (disk - 1));
+    head = disk - 1;
+    printf(" -> %d", head);
+
+    /* Jump to beginning */
+    total += disk - 1;
+    head = 0;
+    printf(" -> %d", head);
+
+    /* Service remaining requests */
+    for(i = 0; i < n; i++)
+    {
+        if(req[i] < head)
+        {
+            total += abs(head - req[i]);
+            head = req[i];
+            printf(" -> %d", head);
+        }
+    }
+
+    printf("\nTotal Head Movement = %d\n", total);
+
+    return 0;
+}
