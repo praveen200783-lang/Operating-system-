@@ -1,0 +1,23 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int main()
+{
+    printf("File Permissions:\n");
+    printf("r = Read\n");
+    printf("w = Write\n");
+    printf("x = Execute\n");
+
+    printf("\nUsers:\n");
+    printf("u = Owner\n");
+    printf("g = Group\n");
+    printf("o = Others\n");
+
+    system("touch test.txt");
+    system("chmod 755 test.txt");
+
+    printf("\nPermissions set to 755\n");
+    system("ls -l test.txt");
+
+    return 0;
+}
